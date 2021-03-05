@@ -1,0 +1,36 @@
+---
+title: "LeafletAssignment"
+author: ""
+date: ""
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE}
+library(leaflet)
+```
+
+## Conservation Areas Near St. Louis
+
+## 3-4-2021
+
+### Click on circles for more information.
+
+```{r, echo=FALSE, warning=FALSE, comment="", message=FALSE}
+consAreas <- read.csv("Week2 assignment info.csv")
+
+consAreas$relSize <- with(consAreas, ifelse(sizeAcres >= 2500 , 5, ifelse((sizeAcres >= 1000 & sizeAcres < 2500), 3, 1)))
+consAreas$color <- with(consAreas, ifelse(relSize == 5, "green", ifelse((relSize == 3), "blue", "red")))
+
+consAreas %>% 
+        leaflet() %>% 
+        addTiles() %>%
+        addCircleMarkers(weight = 4,radius = consAreas$relSize*6, color = consAreas$color, 
+                         popup = paste(consAreas$name, consAreas$sizeAcres, " acres" )) %>% 
+        addLegend(labels = c("> 2500 acres", "1000-2499 acres", "< 1000 acres"), colors=c("green", "blue", "red"))
+
+
+```
